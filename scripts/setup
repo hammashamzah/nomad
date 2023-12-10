@@ -52,30 +52,6 @@ pip install -r requirements.txt
 
 cd ..
 
-src_dir="./comfy"
-target_dir="./data"
-
-# Ensure the target directory exists
-mkdir -p "$target_dir"
-
-# List of directories to create symlinks for
-directories=("custom_nodes" "input" "models" "output" "workflows")
-
-# Loop through each directory and create a symlink
-for dir in "${directories[@]}"; do
-    src_path="$src_dir/$dir"
-    target_path="$target_dir/$dir"
-
-    # Check if the source directory exists
-    if [ -d "$src_path" ]; then
-        # Create a symlink at the target pointing to the source
-        ln -s "$src_path" "$target_path"
-        echo "Symlink created for $src_path -> $target_path"
-    else
-        echo "Source directory not found: $src_path"
-    fi
-done
-
 echo "Setup rclone config..."
 
 # create if not exist. replcae if exist

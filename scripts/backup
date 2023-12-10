@@ -1,6 +1,6 @@
 #!/bin/bash
 
-source .env
+directories=("custom_nodes" "input" "models" "output" "workflows")
 
 confirm_proceed() {
     read -p "Press y to continue or any other key to cancel: " -n 1 -r
@@ -13,6 +13,8 @@ confirm_proceed() {
         exit 1
     fi
 }
+
+source .env
 
 function get_overwrite_option {
     # check if --overwrite is provided
@@ -31,9 +33,9 @@ overwrite=$(get_overwrite_option $1)
 if [ "$overwrite" = "true" ]; then
     echo "Overwrite option provided. This will overwrite the data directory"
     confirm_proceed
-    rclone sync data r2:$CLOUDFLARE_BUCKET_NAME/nomad-data
+    rclone sync /home/$SERVER_USER/$PROJECT_ROOT_DIR/comfy/$dir r2:$CLOUDFLARE_BUCKET_NAME/nomad-data/$dir
 else
     echo "Overwrite option not provided. This will merge the data directory"
-    rclone copy data r2:$CLOUDFLARE_BUCKET_NAME/nomad-data
+    rclone copy /home/$SERVER_USER/$PROJECT_ROOT_DIR/comfy/$dir r2:$CLOUDFLARE_BUCKET_NAME/nomad-data/$dir
 fi
 rclone
