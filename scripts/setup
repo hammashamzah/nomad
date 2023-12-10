@@ -1,5 +1,7 @@
 #!/bin/bash
 
+source .env
+
 os=$(uname -s)
 arch=$(uname -m)
 
