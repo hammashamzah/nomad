@@ -1,0 +1,39 @@
+#!/bin/bash
+
+source .env
+
+confirm_proceed() {
+    read -p "Press y to continue or any other key to cancel: " -n 1 -r
+    echo  # Move to a new line
+
+    if [[ $REPLY =~ ^[Yy]$ ]]; then
+        echo "Continuing..."
+    else
+        echo "Cancelled."
+        exit 1
+    fi
+}
+
+function get_overwrite_option {
+    # check if --overwrite is provided
+    if [ "$1" = "--overwrite" ]; then
+        echo "true"
+    else
+        echo "false"
+    fi
+}
+
+cd /home/$SERVER_USER/$PROJECT_ROOT_DIR
+
+# Restore data from r2
+echo "Restoring data from r2..."
+overwrite=$(get_overwrite_option $1)
+if [ "$overwrite" = "true" ]; then
+    echo "Overwrite option provided. This will overwrite the data directory"
+    confirm_proceed
+    rclone sync data r2:$CLOUDFLARE_BUCKET_NAME/nomad-data
+else
+    echo "Overwrite option not provided. This will merge the data directory"
+    rclone copy data r2:$CLOUDFLARE_BUCKET_NAME/nomad-data
+fi
+rclone

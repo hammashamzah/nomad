@@ -1,0 +1,12 @@
+#!/bin/bash
+
+source .env
+# copy .env file to remote server
+echo "Copying .env file to remote server..."
+scp -P $SERVER_SSH_PORT .env $SERVER_USER@$SERVER_IP:/home/$REMOTE_USER/.env
+# Clone nomad repository if not exist
+ssh -p $SERVER_SSH_PORT $SERVER_USER@$SERVER_IP "git clone https://github.com/hammashamzah/nomad /home/$SERVER_USER/$PROJECT_ROOT_DIR"
+echo "SSHing into remote server..."
+# Do chmod for the bash scripts
+ssh -p $SERVER_SSH_PORT $SERVER_USER@$SERVER_IP "cd /home/$SERVER_USER/$PROJECT_ROOT_DIR && chmod +x nomad && chmod +x scripts/*"
+ssh -p $SERVER_SSH_PORT $SERVER_USER@$SERVER_IP

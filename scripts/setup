@@ -1,0 +1,97 @@
+#!/bin/bash
+
+os=$(uname -s)
+arch=$(uname -m)
+
+if [ "$os" = "Darwin" ] && [[ "$arch" == "arm64" || "$arch" == "aarch64" ]]; then
+    host_os="mac-arm64"
+elif [ "$os" = "Linux" ]; then
+    host_os="linux"
+else
+    exit 1
+fi
+
+# Setup tailscale if not already installed
+if ! command -v tailscale &> /dev/null; then
+    sudo curl -fsSL https://tailscale.com/install.sh | sudo sh
+fi
+
+sudo tailscale up --ssh --hostname $SERVER_HOSTNAME
+
+echo "Tailscale setup complete"
+echo "Server is accessible at $(tailscale ip -4)"
+
+# Install apt dependencies
+if [ "$host_os" = "linux" ]; then
+    sudo apt update
+    sudo apt install -y git curl wget rsync
+    sudo add-apt-repository ppa:deadsnakes/ppa -y
+    sudo apt install python3.10 python3.10-venv -y
+    sudo apt install ffmpeg libsm6 libxext6 libgl1 -y
+    sudo apt install --no-install-recommends google-perftools -y
+fi
+
+# Clone comfyUI repository
+git clone https://github.com/comfyanonymous/ComfyUI comfy
+
+cd comfy
+
+# Create virtual environment
+python3.10 -m venv venv
+
+# Activate virtual environment
+source venv/bin/activate
+
+# Install python dependencies
+pip install torch torchvision torchaudio
+pip install -r requirements.txt
+
+cd ..
+
+src_dir = "./comfy"
+target_dir = "./data"
+
+# Ensure the target directory exists
+mkdir -p "$target_dir"
+
+# List of directories to create symlinks for
+directories=("custom_nodes" "input" "models" "output" "workflows")
+
+# Loop through each directory and create a symlink
+for dir in "${directories[@]}"; do
+    src_path="$src_dir/$dir"
+    target_path="$target_dir/$dir"
+
+    # Check if the source directory exists
+    if [ -d "$src_path" ]; then
+        # Create a symlink at the target pointing to the source
+        ln -s "$src_path" "$target_path"
+        echo "Symlink created for $src_path -> $target_path"
+    else
+        echo "Source directory not found: $src_path"
+    fi
+done
+
+echo "Setup rclone config..."
+
+# create if not exist. replcae if exist
+
+mkdir -p ~/.config/rclone
+
+if [ -f ~/.config/rclone/rclone.conf ]; then
+    rm ~/.config/rclone/rclone.conf
+fi
+
+echo "
+[r2]
+type = s3
+provider = Cloudflare
+access_key_id = $CLOUDFLARE_ACCESS_KEY_ID
+secret_access_key = $CLOUDFLARE_SECRET_ACCESS_KEY
+endpoint = https://$CLOUDFLARE_ACCOUNT_ID.r2.cloudflarestorage.com
+acl = private
+" > ~/.config/rclone/rclone.conf
+
+./restore
+
+echo "Setup complete"
