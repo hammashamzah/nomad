@@ -1,6 +1,6 @@
 #!/bin/bash
 
-directories=("input" "models" "output" "workflows")
+directories=("input" "output" "workflows")
 
 confirm_proceed() {
     read -p "Press y to continue or any other key to cancel: " -n 1 -r
