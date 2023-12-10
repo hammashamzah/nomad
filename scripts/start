@@ -8,4 +8,4 @@ cd /home/$SERVER_USER/$PROJECT_ROOT_DIR/comfy
 source ./venv/bin/activate
 
 # Run comfy
-python main.py
+python main.py --listen
