@@ -44,7 +44,7 @@ if [ -z "$1" ]; then
 else
     option=$1  # Set option based on command line argument
     # validate provided argument
-    if [[ $option != "setup" && $option != "start" && $option != "restore" && $option != "backup" ]]; then
+    if [[ $option != "setup" && $option != "start" && $option != "restore" && $option != "backup" && $option != "ssh" ]]; then
         echo "Invalid option: $option"
         select_option
         execute $option  # Call execute with the selected option
