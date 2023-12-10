@@ -59,4 +59,4 @@ You are now ready to run the other commands on the remote server!
 ## What's next?
 
 - [ ] Sync the config files with R2
-
+- [ ] Update nomad

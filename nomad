@@ -1,25 +1,5 @@
 #!/bin/bash
 
-function start {
-    echo "Starting..."
-    # Add your start logic here
-}
-
-function restore {
-    echo "Restoring..."
-    # Add your restore logic here
-}
-
-function backup {
-    echo "Backing up..."
-    # Add your backup logic here
-}
-
-function ssh {
-    echo "SSHing into remote server with env..."
-    ./scripts/sync_and_ssh.sh
-}
-
 function select_option {
     echo "Select an option:"
     select option in "setup" "start" "restore" "backup" "ssh"; do
@@ -34,19 +14,19 @@ function select_option {
 function execute {
     case $1 in  # Changed 'option' to '$1'
         setup)
-            ./scripts/setup.sh
+            ./scripts/setup
             ;;
         start)
-            start
+            ./scripts/start
             ;;
         restore)
-            restore
+            ./scripts/restore
             ;;
         backup)
-            backup
+            ./scripts/backup
             ;;
         ssh)
-            ssh
+            ./scripts/sync_and_ssh
             ;;
         *)
             echo "Invalid option: $1"
