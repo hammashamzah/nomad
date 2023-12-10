@@ -1,5 +1,7 @@
 #!/bin/bash
 
+source .env
+
 cd /home/$SERVER_USER/$PROJECT_ROOT_DIR/$PROJECT_ROOT_DIR/comfy
 
 # Activate virtual environment
