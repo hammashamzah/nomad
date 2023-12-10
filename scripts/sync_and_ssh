@@ -1,12 +1,22 @@
 #!/bin/bash
 
 source .env
-# copy .env file to remote server
-echo "Copying .env file to remote server..."
-# Clone nomad repository if not exist
-ssh -p $SERVER_SSH_PORT $SERVER_USER@$SERVER_IP "git clone https://github.com/hammashamzah/nomad /home/$SERVER_USER/$PROJECT_ROOT_DIR"
-echo "SSHing into remote server..."
+
+# Check if the directory exists
+if [ -d "/home/$SERVER_USER/$PROJECT_ROOT_DIR" ]; then
+    echo "Directory exists. Pulling latest changes..."
+    ssh -p $SERVER_SSH_PORT $SERVER_USER@$SERVER_IP "cd /home/$SERVER_USER/$PROJECT_ROOT_DIR && git pull"
+else
+    echo "Directory does not exist. Cloning repository..."
+    ssh -p $SERVER_SSH_PORT $SERVER_USER@$SERVER_IP "git clone https://github.com/hammashamzah/nomad /home/$SERVER_USER/$PROJECT_ROOT_DIR"
+fi
+
 # Do chmod for the bash scripts
+echo "Change script execute permission..."
 ssh -p $SERVER_SSH_PORT $SERVER_USER@$SERVER_IP "cd /home/$SERVER_USER/$PROJECT_ROOT_DIR && chmod +x nomad && chmod +x scripts/*"
+
+echo "Copying .env file to remote server..."
 scp -P $SERVER_SSH_PORT .env $SERVER_USER@$SERVER_IP:/home/$SERVER_USER/$PROJECT_ROOT_DIR/.env
+
+echo "SSHing into remote server..."
 ssh -p $SERVER_SSH_PORT $SERVER_USER@$SERVER_IP
