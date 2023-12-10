@@ -33,9 +33,16 @@ overwrite=$(get_overwrite_option $1)
 if [ "$overwrite" = "true" ]; then
     echo "Overwrite option provided. This will overwrite the data directory"
     confirm_proceed
-    rclone sync /home/$SERVER_USER/$PROJECT_ROOT_DIR/comfy/$dir r2:$CLOUDFLARE_BUCKET_NAME/nomad-data/$dir
+
+    for dir in "${directories[@]}"; do
+        echo "Backing up /home/$SERVER_USER/$PROJECT_ROOT_DIR/comfy/$dir..."
+        rclone sync /home/$SERVER_USER/$PROJECT_ROOT_DIR/comfy/$dir r2:$CLOUDFLARE_BUCKET_NAME/nomad-data/$dir
+    done
 else
     echo "Overwrite option not provided. This will merge the data directory"
-    rclone copy /home/$SERVER_USER/$PROJECT_ROOT_DIR/comfy/$dir r2:$CLOUDFLARE_BUCKET_NAME/nomad-data/$dir
+    for dir in "${directories[@]}"; do
+        echo "Backing up /home/$SERVER_USER/$PROJECT_ROOT_DIR/comfy/$dir..."
+        rclone copy /home/$SERVER_USER/$PROJECT_ROOT_DIR/comfy/$dir r2:$CLOUDFLARE_BUCKET_NAME/nomad-data/$dir
+    done
 fi
 rclone
