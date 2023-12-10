@@ -1,6 +1,6 @@
 #!/bin/bash
 
-directories=("custom_nodes" "input" "models" "output" "workflows")
+directories=("input" "models" "output" "workflows")
 
 confirm_proceed() {
     read -p "Press y to continue or any other key to cancel: " -n 1 -r
@@ -25,10 +25,10 @@ echo "Press enter to continue or Ctrl+C to cancel"
 confirm_proceed
 
 for dir in "${directories[@]}"; do
-    echo "Restoring /home/$SERVER_USER/PROJECT_ROOT_DIR/comfy/$dir..."
+    echo "Restoring /home/$SERVER_USER/$PROJECT_ROOT_DIR/comfy/$dir..."
     # create dir if not exist
-    mkdir -p /home/$SERVER_USER/PROJECT_ROOT_DIR/comfy/$dir
-    rclone copy r2:$CLOUDFLARE_BUCKET_NAME/nomad-data/$dir /home/$SERVER_USER/PROJECT_ROOT_DIR/comfy/$dir
+    mkdir -p /home/$SERVER_USER/$PROJECT_ROOT_DIR/comfy/$dir
+    rclone -v copy r2:$CLOUDFLARE_BUCKET_NAME/nomad-data/$dir /home/$SERVER_USER/$PROJECT_ROOT_DIR/comfy/$dir
 done
 
-rclone copy r2:$CLOUDFLARE_BUCKET_NAME/nomad-data data
+rclone -v copy r2:$CLOUDFLARE_BUCKET_NAME/nomad-data data

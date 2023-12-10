@@ -1,6 +1,6 @@
 #!/bin/bash
 
-directories=("custom_nodes" "input" "models" "output" "workflows")
+directories=("input" "models" "output" "workflows")
 
 confirm_proceed() {
     read -p "Press y to continue or any other key to cancel: " -n 1 -r
@@ -36,13 +36,13 @@ if [ "$overwrite" = "true" ]; then
 
     for dir in "${directories[@]}"; do
         echo "Backing up /home/$SERVER_USER/$PROJECT_ROOT_DIR/comfy/$dir..."
-        rclone sync /home/$SERVER_USER/$PROJECT_ROOT_DIR/comfy/$dir r2:$CLOUDFLARE_BUCKET_NAME/nomad-data/$dir
+        rclone -v sync /home/$SERVER_USER/$PROJECT_ROOT_DIR/comfy/$dir r2:$CLOUDFLARE_BUCKET_NAME/nomad-data/$dir
     done
 else
     echo "Overwrite option not provided. This will merge the data directory"
     for dir in "${directories[@]}"; do
         echo "Backing up /home/$SERVER_USER/$PROJECT_ROOT_DIR/comfy/$dir..."
-        rclone copy /home/$SERVER_USER/$PROJECT_ROOT_DIR/comfy/$dir r2:$CLOUDFLARE_BUCKET_NAME/nomad-data/$dir
+        rclone -v copy /home/$SERVER_USER/$PROJECT_ROOT_DIR/comfy/$dir r2:$CLOUDFLARE_BUCKET_NAME/nomad-data/$dir
     done
 fi
 rclone
