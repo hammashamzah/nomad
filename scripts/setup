@@ -26,7 +26,7 @@ echo "Server is accessible at $(tailscale ip -4)"
 # Install apt dependencies
 if [ "$host_os" = "linux" ]; then
     sudo apt update
-    sudo apt install -y git curl wget rsync
+    sudo apt install -y git curl wget rsync rclone
     sudo add-apt-repository ppa:deadsnakes/ppa -y
     sudo apt install python3.10 python3.10-venv -y
     sudo apt install ffmpeg libsm6 libxext6 libgl1 -y
@@ -34,7 +34,9 @@ if [ "$host_os" = "linux" ]; then
 fi
 
 # Clone comfyUI repository
-git clone https://github.com/comfyanonymous/ComfyUI comfy
+if [ ! -d "comfy" ]; then
+    git clone https://github.com/comfyanonymous/ComfyUI comfy
+fi
 
 cd comfy
 
@@ -50,8 +52,8 @@ pip install -r requirements.txt
 
 cd ..
 
-src_dir = "./comfy"
-target_dir = "./data"
+src_dir="./comfy"
+target_dir="./data"
 
 # Ensure the target directory exists
 mkdir -p "$target_dir"
