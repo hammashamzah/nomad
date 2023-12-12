@@ -77,4 +77,6 @@ endpoint = https://$CLOUDFLARE_ACCOUNT_ID.r2.cloudflarestorage.com
 acl = private
 " > ~/.config/rclone/rclone.conf
 
+./scripts/tmux_start
+
 echo "Setup complete"

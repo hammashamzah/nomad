@@ -19,5 +19,8 @@ ssh -p $SERVER_SSH_PORT $SERVER_USER@$SERVER_IP "cd /home/$SERVER_USER/$PROJECT_
 echo "Copying .env file to remote server..."
 scp -P $SERVER_SSH_PORT .env $SERVER_USER@$SERVER_IP:/home/$SERVER_USER/$PROJECT_ROOT_DIR/.env
 
+echo "Copying files inside links directory to remote server..."
+scp -P $SERVER_SSH_PORT -r links $SERVER_USER@$SERVER_IP:/home/$SERVER_USER/$PROJECT_ROOT_DIR
+
 echo "SSHing into remote server..."
 ssh -p $SERVER_SSH_PORT $SERVER_USER@$SERVER_IP

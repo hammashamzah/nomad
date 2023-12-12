@@ -1,0 +1,27 @@
+#!/bin/bash
+
+source .env
+
+cd /home/$SERVER_USER/$PROJECT_ROOT_DIR
+
+tmux new-session -d -s PROJECT_ROOT_DIR
+
+# split window horizontally, then split both panes vertically
+tmux split-window -h
+tmux split-window -v
+tmux select-pane -t 0
+tmux split-window -v
+
+# run commands
+# on the top left pane, run the server (./scripts/start)
+tmux select-pane -t 0
+tmux send-keys "cd /home/$SERVER_USER/$PROJECT_ROOT_DIR/comfy" C-m
+tmux send-keys "./scripts/start" C-m
+
+# on the top right pane, run htop
+tmux select-pane -t 1
+tmux send-keys "htop" C-m
+
+# on the bottom right pane, run 'watch -n 1 nvidia-smi'
+tmux select-pane -t 2
+tmux send-keys "watch -n 1 nvidia-smi" C-m
