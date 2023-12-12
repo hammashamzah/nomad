@@ -1,0 +1,19 @@
+#!/bin/bash
+
+source .env
+
+# install aria2c if not installed
+if ! [ -x "$(command -v aria2c)" ]; then
+    sudo apt update
+    sudo apt install aria2 -y
+fi
+
+# iterate over files in links directory.
+# download files on the *.txt file, skip links with # at the beginning
+# download to the directory specified on the filename
+# for example, download all files on checkpoints.txt to ./comfy/models/checkpoints
+
+for file in ./links/*.txt; do
+    directory=$(basename $file .txt)
+    grep -v '^#' $file | aria2c -i - -d ./comfy/models/$directory --auto-file-renaming=false
+done

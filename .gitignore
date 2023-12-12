@@ -1,3 +1,5 @@
 comfy
 data
 .env
+links/*.txt
+!links/put_your_urls_here.txt

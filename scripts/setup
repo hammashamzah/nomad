@@ -50,6 +50,11 @@ source venv/bin/activate
 pip install torch torchvision torchaudio
 pip install -r requirements.txt
 
+# check if custom_nodes/ComfyUI-Manager exists
+if [ ! -d "custom_nodes/ComfyUI-Manager" ]; then
+    git clone https://github.com/ltdrdata/ComfyUI-Manager custom_nodes/ComfyUI-Manager
+fi
+
 cd ..
 
 echo "Setup rclone config..."
@@ -71,7 +76,5 @@ secret_access_key = $CLOUDFLARE_SECRET_ACCESS_KEY
 endpoint = https://$CLOUDFLARE_ACCOUNT_ID.r2.cloudflarestorage.com
 acl = private
 " > ~/.config/rclone/rclone.conf
-
-./restore
 
 echo "Setup complete"
