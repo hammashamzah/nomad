@@ -1,0 +1,24 @@
+#!/bin/bash
+
+cd
+
+# clone worker repository if not already cloned
+if [ ! -d "worker" ]; then
+    git clone git@github.com:hammashamzah/produkai-worker-comfy.git worker
+else
+    cd worker
+    git pull
+    cd ..
+fi
+
+cd worker
+
+# download models if not already downloaded to data directory
+# if [ ! -d "data" ]; then
+#     mkdir data
+# fi
+
+docker buildx build -t hammashamzah/produkai-worker:latest .
+
+echo "$DOCKER_ACCESS_TOKEN" | docker login -u hammashamzah --password-stdin
+docker push hammashamzah/produkai-worker:latest
