@@ -1,0 +1,15 @@
+#!/bin/bash
+
+cd
+
+if [ ! -d "onnx_cuda" ]; then
+    git clone https://github.com/microsoft/onnxruntime.git onnx_cuda
+else
+    cd onnx_cuda
+    git pull
+    cd ..
+fi
+
+cd onnx_cuda/dockerfiles
+
+docker buildx build -t onnxruntime-cuda -f Dockerfile.cuda ..
